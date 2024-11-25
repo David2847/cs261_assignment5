@@ -55,11 +55,6 @@ class MinHeap:
         """
         Percolates up the specified node to maintain heap property
         """
-        # while loop --
-        #       find the parent of the node with that formula
-        #       compare parent and node
-        #       swap if node PV is less than its parent
-        #       kick out of the while loop if it's reached the right spot
         spot_found = False
         while not spot_found:
             if node_index == 0:
@@ -91,40 +86,197 @@ class MinHeap:
 
     def remove_min(self) -> object:
         """
-        TODO: Write this implementation
+        Removes and returns the object with the minimum key while performing necessary
+        shuffling operations to maintain heap property.
         """
-        pass
+        if self.is_empty():
+            raise MinHeapException
+        # store value of root node
+        min_node = self._heap[0]
+        # store value of last element at index zero
+        last_node_index = self._heap.length() - 1
+        self._heap[0] = self._heap[last_node_index]
+        # remove last element
+        self._heap.remove_at_index(last_node_index)
+        # percolate new root down
+        self.percolate_down(0, self.size() - 1)
+        # return value of root node
+        return min_node
+
+    def percolate_down(self, node_index, max_index) -> None:
+        """
+        Percolates the root index down to maintain heap property.
+        """
+        spot_found = False
+        while not spot_found:
+            # find both children of current node
+            left_child_index = node_index * 2 + 1
+            right_child_index = node_index * 2 + 2
+            try:
+                left_child = self._heap.get_at_index(left_child_index)
+            except DynamicArrayException:
+                left_child = None
+            try:
+                right_child = self._heap.get_at_index(right_child_index)
+            except DynamicArrayException:
+                right_child = None
+
+            # this chunk is for HeapSort... ensures we don't stray out of the heap
+            #       section of the array while sorting in place.
+            if left_child_index > max_index:
+                left_child = None
+            if right_child_index > max_index:
+                right_child = None
+
+            # keep the smaller child
+            # or if right and left are equal keep the left child
+            # or if one doesn't exist, keep the one that does
+            # or if neither exists, kick out of the while loop
+            if left_child is None and right_child is None:
+                return
+            elif right_child is None or left_child <= right_child:
+                favorite_child = left_child
+                fav_child_index = left_child_index
+            else:
+                favorite_child = right_child
+                fav_child_index = right_child_index
+
+            # swap if child is less than parent
+            node = self._heap.get_at_index(node_index)
+            if favorite_child < node:
+                self._heap[node_index] = favorite_child
+                self._heap[fav_child_index] = node
+                node_index = fav_child_index  # update node index for next run through while loop
+            else:
+                spot_found = True
 
     def build_heap(self, da: DynamicArray) -> None:
         """
-        TODO: Write this implementation
+        Builds a heap out of an unsorted array, overwriting current contents
+        of the heap.
         """
-        pass
+        # Handle empty array edge case
+        if da.is_empty():
+            self._heap = DynamicArray()
+            return
+
+        self._heap = da.slice(0, da.length())  # copy over data
+        # start at first non-leaf node, percolate down
+        last_node_index = self._heap.length() - 1
+        node_index = (last_node_index - 1) // 2
+
+        # node_index could be -1 immediately, but while loop handles this
+        while node_index >= 0:
+            self.percolate_down(node_index, self.size() - 1)
+            node_index -= 1
 
     def size(self) -> int:
         """
-        TODO: Write this implementation
+        Returns the number of items currently stored on the heap.
         """
-        pass
+        return self._heap.length()
 
     def clear(self) -> None:
         """
-        TODO: Write this implementation
+        Clears the contents of the heap.
         """
-        pass
+        self._heap = DynamicArray()
 
+    def swap(self, index1, index2) -> None:
+        """
+        Swaps two objects in the heap
+        """
+        obj1 = self._heap[index1]
+        obj2 = self._heap[index2]
+        self._heap[index1] = obj2
+        self._heap[index2] = obj1
+
+
+def percolate_down(da: DynamicArray, node_index: int, max_index: int) -> None:
+    """
+    Perform percolate down operation in place on dynamic array. Node at node_index
+    is percolated down, not past max_index.
+    """
+    spot_found = False
+    while not spot_found:
+        # find both children of current node
+        left_child_index = node_index * 2 + 1
+        right_child_index = node_index * 2 + 2
+        try:
+            left_child = self._heap.get_at_index(left_child_index)
+        except DynamicArrayException:
+            left_child = None
+        try:
+            right_child = self._heap.get_at_index(right_child_index)
+        except DynamicArrayException:
+            right_child = None
+
+        # this chunk is for HeapSort... ensures we don't stray out of the heap
+        #       section of the array while sorting in place.
+        if left_child_index > max_index:
+            left_child = None
+        if right_child_index > max_index:
+            right_child = None
+
+        # keep the smaller child
+        # or if right and left are equal keep the left child
+        # or if one doesn't exist, keep the one that does
+        # or if neither exists, kick out of the while loop
+        if left_child is None and right_child is None:
+            return
+        elif right_child is None or left_child <= right_child:
+            favorite_child = left_child
+            fav_child_index = left_child_index
+        else:
+            favorite_child = right_child
+            fav_child_index = right_child_index
+
+        # swap if child is less than parent
+        node = self._heap.get_at_index(node_index)
+        if favorite_child < node:
+            self._heap[node_index] = favorite_child
+            self._heap[fav_child_index] = node
+            node_index = fav_child_index  # update node index for next run through while loop
+        else:
+            spot_found = True
 
 def heapsort(da: DynamicArray) -> None:
     """
-    TODO: Write this implementation
+    Receives a DynamicArray and sorts it using the heap sort algorithm
     """
-    pass
+    # Handle empty array edge case
+    if da.is_empty():
+        return
 
-def _percolate_down(da: DynamicArray, parent: int) -> None:
-    """
-    TODO: Write your implementation
-    """
-    pass
+    # start at first non-leaf node, percolate down
+    last_node_index = da.length() - 1
+    node_index = (last_node_index - 1) // 2
+
+    # node_index could be -1 immediately, but while loop handles this
+    while node_index >= 0:
+        percolate_down(da, node_index, da.length() - 1)
+        node_index -= 1
+
+
+
+
+
+
+
+    # build a heap out of the array
+    min_heap = MinHeap()
+    min_heap.build_heap(da)
+
+    # counter k initialized to point to last element
+    counter = min_heap.size() - 1
+
+    while counter > 0:
+        min_heap.swap(0, counter)  # swap kth element and first (smallest) element
+        # decrement k and percolate replacement value down. don't percolate past heap portion of the array!
+        counter -= 1
+        min_heap.percolate_down(0, counter)
+
+
 
 
 # ------------------- BASIC TESTING -----------------------------------------
@@ -163,7 +315,7 @@ if __name__ == '__main__':
     h = MinHeap(['fish', 'bird'])
     print(h)
     print(h.get_min(), h.get_min())
-"""
+
     print("\nPDF - remove_min example 1")
     print("--------------------------")
     h = MinHeap([1, 10, 2, 9, 3, 8, 4, 7, 5, 6])
@@ -188,6 +340,14 @@ if __name__ == '__main__':
     print(h)
     if h.get_min() == 500:
         print("Error: input array and heap's underlying DA reference same object in memory")
+
+    print("\nPDF - build_heap example 2")
+    print("--------------------------")
+    da = DynamicArray([])
+    h = MinHeap(['zebra', 'apple'])
+    print(h)
+    h.build_heap(da)
+    print(h)
 
     print("\nPDF - size example 1")
     print("--------------------")
@@ -219,4 +379,3 @@ if __name__ == '__main__':
     print(f"Before: {da}")
     heapsort(da)
     print(f"After:  {da}")
-"""
