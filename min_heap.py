@@ -1,9 +1,12 @@
-# Name:
-# OSU Email:
+# Name: David Jantz
+# OSU Email: jantzd@oregonstate.edu
 # Course: CS261 - Data Structures
-# Assignment:
-# Due Date:
-# Description:
+# Assignment 5: Min Heap Implementation
+# Due Date: 11/25/2024
+# Description: This program implements a classic min heap using a dynamic array as
+#               the underlying data structure. All typical min heap operations are
+#               implemented, such as add(), get_min(), remove_min(), build_heap(),
+#               heapsort(), etc.
 
 
 from dynamic_array import *
