@@ -44,21 +44,50 @@ class MinHeap:
 
     def add(self, node: object) -> None:
         """
-        TODO: Write this implementation
+        Adds an element to the heap while maintaining heap properties.
         """
-        pass
+        # add to the last spot in the array
+        self._heap.append(node)
+        # percolate up until it's priority value is greater its parent
+        self._percolate_up(self._heap.length() - 1)
+
+    def _percolate_up(self, node_index: int) -> None:
+        """
+        Percolates up the specified node to maintain heap property
+        """
+        # while loop --
+        #       find the parent of the node with that formula
+        #       compare parent and node
+        #       swap if node PV is less than its parent
+        #       kick out of the while loop if it's reached the right spot
+        spot_found = False
+        while not spot_found:
+            if node_index == 0:
+                return  # terminate while loop if the OG node is now the root
+            parent_index = (node_index - 1) // 2  # floor division to find parent index
+            parent = self._heap[parent_index]
+            node = self._heap[node_index]
+            if node < parent:
+                self._heap[node_index] = parent
+                self._heap[parent_index] = node
+                node_index = parent_index  # update node index for next run through while loop
+            else:
+                spot_found = True
 
     def is_empty(self) -> bool:
         """
-        TODO: Write this implementation
+        Returns True if heap is empty, otherwise returns False
         """
-        pass
+        return self._heap.is_empty()  # implement with preexisting DynamicArray method
 
     def get_min(self) -> object:
         """
-        TODO: Write this implementation
+        Returns an object with the minimum key, without removing it from the heap. If
+        the heap is empty, the method raises a MinHeapException.
         """
-        pass
+        if self.is_empty():
+            raise MinHeapException
+        return self._heap[0]
 
     def remove_min(self) -> object:
         """
@@ -90,11 +119,6 @@ def heapsort(da: DynamicArray) -> None:
     TODO: Write this implementation
     """
     pass
-
-
-# It's highly recommended that you implement the following optional          #
-# helper function for percolating elements down the MinHeap. You can call    #
-# this from inside the MinHeap class. You may edit the function definition.  #
 
 def _percolate_down(da: DynamicArray, parent: int) -> None:
     """
@@ -139,7 +163,7 @@ if __name__ == '__main__':
     h = MinHeap(['fish', 'bird'])
     print(h)
     print(h.get_min(), h.get_min())
-
+"""
     print("\nPDF - remove_min example 1")
     print("--------------------------")
     h = MinHeap([1, 10, 2, 9, 3, 8, 4, 7, 5, 6])
@@ -195,3 +219,4 @@ if __name__ == '__main__':
     print(f"Before: {da}")
     heapsort(da)
     print(f"After:  {da}")
+"""
