@@ -182,15 +182,6 @@ class MinHeap:
         """
         self._heap = DynamicArray()
 
-    def swap(self, index1, index2) -> None:
-        """
-        Swaps two objects in the heap
-        """
-        obj1 = self._heap[index1]
-        obj2 = self._heap[index2]
-        self._heap[index1] = obj2
-        self._heap[index2] = obj1
-
 
 def percolate_down(da: DynamicArray, node_index: int, max_index: int) -> None:
     """
@@ -203,11 +194,11 @@ def percolate_down(da: DynamicArray, node_index: int, max_index: int) -> None:
         left_child_index = node_index * 2 + 1
         right_child_index = node_index * 2 + 2
         try:
-            left_child = self._heap.get_at_index(left_child_index)
+            left_child = da.get_at_index(left_child_index)
         except DynamicArrayException:
             left_child = None
         try:
-            right_child = self._heap.get_at_index(right_child_index)
+            right_child = da.get_at_index(right_child_index)
         except DynamicArrayException:
             right_child = None
 
@@ -232,23 +223,25 @@ def percolate_down(da: DynamicArray, node_index: int, max_index: int) -> None:
             fav_child_index = right_child_index
 
         # swap if child is less than parent
-        node = self._heap.get_at_index(node_index)
+        node = da.get_at_index(node_index)
         if favorite_child < node:
-            self._heap[node_index] = favorite_child
-            self._heap[fav_child_index] = node
+            da[node_index] = favorite_child
+            da[fav_child_index] = node
             node_index = fav_child_index  # update node index for next run through while loop
         else:
             spot_found = True
+
 
 def heapsort(da: DynamicArray) -> None:
     """
     Receives a DynamicArray and sorts it using the heap sort algorithm
     """
+
     # Handle empty array edge case
     if da.is_empty():
         return
 
-    # start at first non-leaf node, percolate down
+    # Time to build a heap out of the array. Start at first non-leaf node, percolate down
     last_node_index = da.length() - 1
     node_index = (last_node_index - 1) // 2
 
@@ -257,26 +250,26 @@ def heapsort(da: DynamicArray) -> None:
         percolate_down(da, node_index, da.length() - 1)
         node_index -= 1
 
-
-
-
-
-
-
-    # build a heap out of the array
-    min_heap = MinHeap()
-    min_heap.build_heap(da)
+    # heap is built! Now perform the repeated switcharoo
 
     # counter k initialized to point to last element
-    counter = min_heap.size() - 1
+    counter = da.length() - 1
 
     while counter > 0:
-        min_heap.swap(0, counter)  # swap kth element and first (smallest) element
+        swap(da, 0, counter)  # swap kth element and first (smallest) element
         # decrement k and percolate replacement value down. don't percolate past heap portion of the array!
         counter -= 1
-        min_heap.percolate_down(0, counter)
+        percolate_down(da, 0, counter)
 
 
+def swap(da: DynamicArray, index1: int, index2: int) -> None:
+    """
+    Swaps two objects in the heap
+    """
+    obj1 = da[index1]
+    obj2 = da[index2]
+    da[index1] = obj2
+    da[index2] = obj1
 
 
 # ------------------- BASIC TESTING -----------------------------------------
