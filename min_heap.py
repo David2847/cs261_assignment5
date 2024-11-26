@@ -99,56 +99,9 @@ class MinHeap:
         # remove last element
         self._heap.remove_at_index(last_node_index)
         # percolate new root down
-        self.percolate_down(0, self.size() - 1)
+        percolate_down(self._heap, 0, self.size() - 1)
         # return value of root node
         return min_node
-
-    def percolate_down(self, node_index, max_index) -> None:
-        """
-        Percolates the root index down to maintain heap property.
-        """
-        spot_found = False
-        while not spot_found:
-            # find both children of current node
-            left_child_index = node_index * 2 + 1
-            right_child_index = node_index * 2 + 2
-            try:
-                left_child = self._heap.get_at_index(left_child_index)
-            except DynamicArrayException:
-                left_child = None
-            try:
-                right_child = self._heap.get_at_index(right_child_index)
-            except DynamicArrayException:
-                right_child = None
-
-            # this chunk is for HeapSort... ensures we don't stray out of the heap
-            #       section of the array while sorting in place.
-            if left_child_index > max_index:
-                left_child = None
-            if right_child_index > max_index:
-                right_child = None
-
-            # keep the smaller child
-            # or if right and left are equal keep the left child
-            # or if one doesn't exist, keep the one that does
-            # or if neither exists, kick out of the while loop
-            if left_child is None and right_child is None:
-                return
-            elif right_child is None or left_child <= right_child:
-                favorite_child = left_child
-                fav_child_index = left_child_index
-            else:
-                favorite_child = right_child
-                fav_child_index = right_child_index
-
-            # swap if child is less than parent
-            node = self._heap.get_at_index(node_index)
-            if favorite_child < node:
-                self._heap[node_index] = favorite_child
-                self._heap[fav_child_index] = node
-                node_index = fav_child_index  # update node index for next run through while loop
-            else:
-                spot_found = True
 
     def build_heap(self, da: DynamicArray) -> None:
         """
@@ -167,7 +120,7 @@ class MinHeap:
 
         # node_index could be -1 immediately, but while loop handles this
         while node_index >= 0:
-            self.percolate_down(node_index, self.size() - 1)
+            percolate_down(self._heap, node_index, self.size() - 1)
             node_index -= 1
 
     def size(self) -> int:
